@@ -35,4 +35,25 @@
 
     <PackageReference Include="RoR2BepInExPack" Version="*" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <ReleaseRoot>$(MSBuildProjectDirectory)\..\..\dist</ReleaseRoot>
+  </PropertyGroup>
+
+  <Target Name="PrepareModRelease" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <RemoveDir Directories="$(ReleaseRoot)" />
+
+    <MakeDir Directories="$(ReleaseRoot)\BepInEx\plugins\EclipseRandomizer" />
+
+    <Copy
+      SourceFiles="$(TargetPath)"
+      DestinationFolder="$(ReleaseRoot)\BepInEx\plugins\EclipseRandomizer"
+    />
+
+    <Copy
+      SourceFiles="$(MSBuildProjectDirectory)\..\..\manifest.json;$(MSBuildProjectDirectory)\..\..\README.md;$(MSBuildProjectDirectory)\..\..\icon.png"
+      DestinationFolder="$(ReleaseRoot)"
+    />
+  </Target>
+
 </Project>

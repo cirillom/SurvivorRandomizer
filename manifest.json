@@ -1,0 +1,10 @@
+{
+  "name": "Survivor Randomizer",
+  "version_number": "1.0.0",
+  "website_url": "",
+  "description": "Client-side random survivor selector with Eclipse progression-aware randomization.",
+  "dependencies": [
+    "bbepis-BepInExPack-5.4.2122",
+    "RiskofThunder-HookGenPatcher-1.2.9"
+  ]
+}
