@@ -1,0 +1,136 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semantic version component to increment
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    env:
+      BUMP: ${{ inputs.bump }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      PROJECT: src/EclipseRandomizer/EclipseRandomizer.csproj
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate branch
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_NAME" != "$DEFAULT_BRANCH" ]]; then
+            echo "Run this workflow from the default branch ($DEFAULT_BRANCH)." >&2
+            exit 1
+          fi
+
+      - name: Calculate version
+        shell: bash
+        run: |
+          mapfile -t versions < <(grep -oE '<Version>(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)</Version>' "$PROJECT")
+
+          if [[ "${#versions[@]}" -ne 1 ]]; then
+            echo "The project must contain exactly one X.Y.Z <Version>." >&2
+            exit 1
+          fi
+
+          current="${versions[0]#<Version>}"
+          current="${current%</Version>}"
+
+          grep -Fq "public const string PluginVersion = \"$current\";" src/EclipseRandomizer/Plugin.cs
+          jq -e --arg version "$current" '.version_number == $version' manifest.json >/dev/null
+
+          IFS=. read -r major minor patch <<< "$current"
+
+          case "$BUMP" in
+            major) version="$((major + 1)).0.0" ;;
+            minor) version="$major.$((minor + 1)).0" ;;
+            patch) version="$major.$minor.$((patch + 1))" ;;
+            *)
+              echo "Unsupported version bump: $BUMP" >&2
+              exit 1
+              ;;
+          esac
+
+          tag="v$version"
+
+          if git rev-parse "refs/tags/$tag" >/dev/null 2>&1; then
+            echo "Tag $tag already exists." >&2
+            exit 1
+          fi
+
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "TAG=$tag" >> "$GITHUB_ENV"
+          echo "Releasing $current -> $version ($BUMP)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Set version
+        shell: bash
+        run: |
+          test "$(grep -Ec 'public const string PluginVersion = "[^"]+";' src/EclipseRandomizer/Plugin.cs)" -eq 1
+          test "$(grep -Ec '<Version>[^<]+</Version>' "$PROJECT")" -eq 1
+
+          sed -Ei "s|(public const string PluginVersion = \")[^\"]+(\";)|\1$VERSION\2|" src/EclipseRandomizer/Plugin.cs
+          sed -Ei "s|<Version>[^<]+</Version>|<Version>$VERSION</Version>|" "$PROJECT"
+          jq --arg version "$VERSION" '.version_number = $version' manifest.json > manifest.json.tmp
+          mv manifest.json.tmp manifest.json
+
+          grep -Fq "public const string PluginVersion = \"$VERSION\";" src/EclipseRandomizer/Plugin.cs
+          grep -Fq "<Version>$VERSION</Version>" "$PROJECT"
+          jq -e --arg version "$VERSION" '.version_number == $version' manifest.json >/dev/null
+          git diff --check
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build release
+        run: dotnet build "$PROJECT" --configuration Release
+
+      - name: Create ZIP
+        shell: bash
+        run: |
+          cd dist
+          zip -r "../EclipseRandomizer-$TAG.zip" BepInEx icon.png manifest.json README.md
+
+      - name: Commit version and tag
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/EclipseRandomizer/Plugin.cs "$PROJECT" manifest.json
+
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(release): $TAG"
+          fi
+
+          git tag -a "$TAG" -m "Eclipse Randomizer $TAG"
+          git push --atomic origin "HEAD:$DEFAULT_BRANCH" "refs/tags/$TAG"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "$TAG"
+          "EclipseRandomizer-$TAG.zip"
+          --verify-tag
+          --title "Eclipse Randomizer $TAG"
+          --generate-notes

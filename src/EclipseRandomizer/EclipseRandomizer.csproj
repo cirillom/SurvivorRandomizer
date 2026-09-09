@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <Version>0.3.0</Version>
 
     <RestoreAdditionalProjectSources>
       https://api.nuget.org/v3/index.json;
@@ -37,21 +38,21 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <ReleaseRoot>$(MSBuildProjectDirectory)\..\..\dist</ReleaseRoot>
+    <ReleaseRoot>$(MSBuildProjectDirectory)/../../dist</ReleaseRoot>
   </PropertyGroup>
 
   <Target Name="PrepareModRelease" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
     <RemoveDir Directories="$(ReleaseRoot)" />
 
-    <MakeDir Directories="$(ReleaseRoot)\BepInEx\plugins\EclipseRandomizer" />
+    <MakeDir Directories="$(ReleaseRoot)/BepInEx/plugins/EclipseRandomizer" />
 
     <Copy
       SourceFiles="$(TargetPath)"
-      DestinationFolder="$(ReleaseRoot)\BepInEx\plugins\EclipseRandomizer"
+      DestinationFolder="$(ReleaseRoot)/BepInEx/plugins/EclipseRandomizer"
     />
 
     <Copy
-      SourceFiles="$(MSBuildProjectDirectory)\..\..\manifest.json;$(MSBuildProjectDirectory)\..\..\README.md;$(MSBuildProjectDirectory)\..\..\icon.png"
+      SourceFiles="$(MSBuildProjectDirectory)/../../manifest.json;$(MSBuildProjectDirectory)/../../README.md;$(MSBuildProjectDirectory)/../../icon.png"
       DestinationFolder="$(ReleaseRoot)"
     />
   </Target>
