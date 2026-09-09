@@ -20,7 +20,7 @@ public sealed class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "com.cirillom.eclipserandomizer";
     public const string PluginName = "Eclipse Randomizer";
-    public const string PluginVersion = "1.0.0";
+    public const string PluginVersion = "1.0.1";
 
     private CharacterSelectController? _characterSelectController;
 
