@@ -1,6 +1,6 @@
 {
   "name": "SurvivorRandomizer",
-  "version_number": "1.1.0",
+  "version_number": "1.1.1",
   "website_url": "https://github.com/cirillom/SurvivorRandomizer",
   "description": "Client-side random survivor selector with Eclipse progression-aware randomization.",
   "dependencies": [
