@@ -20,7 +20,7 @@ public sealed class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "com.cirillom.survivorrandomizer";
     public const string PluginName = "Survivor Randomizer";
-    public const string PluginVersion = "1.0.1";
+    public const string PluginVersion = "1.1.0";
 
     private CharacterSelectController? _characterSelectController;
 
