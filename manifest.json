@@ -1,5 +1,5 @@
 {
-  "name": "EclipseRandomizer",
+  "name": "SurvivorRandomizer",
   "version_number": "1.0.1",
   "website_url": "",
   "description": "Client-side random survivor selector with Eclipse progression-aware randomization.",

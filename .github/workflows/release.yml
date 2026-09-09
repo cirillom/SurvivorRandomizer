@@ -27,7 +27,7 @@ jobs:
       AUTHOR: ${{ github.repository_owner }}
       BUMP: ${{ inputs.bump }}
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-      PROJECT: src/EclipseRandomizer/EclipseRandomizer.csproj
+      PROJECT: src/SurvivorRandomizer/SurvivorRandomizer.csproj
 
     steps:
       - name: Check out repository
@@ -56,7 +56,7 @@ jobs:
           current="${versions[0]#<Version>}"
           current="${current%</Version>}"
 
-          grep -Fq "public const string PluginVersion = \"$current\";" src/EclipseRandomizer/Plugin.cs
+          grep -Fq "public const string PluginVersion = \"$current\";" src/SurvivorRandomizer/Plugin.cs
           jq -e --arg version "$current" '.version_number == $version' manifest.json >/dev/null
 
           IFS=. read -r major minor patch <<< "$current"
@@ -85,15 +85,15 @@ jobs:
       - name: Set version
         shell: bash
         run: |
-          test "$(grep -Ec 'public const string PluginVersion = "[^"]+";' src/EclipseRandomizer/Plugin.cs)" -eq 1
+          test "$(grep -Ec 'public const string PluginVersion = "[^"]+";' src/SurvivorRandomizer/Plugin.cs)" -eq 1
           test "$(grep -Ec '<Version>[^<]+</Version>' "$PROJECT")" -eq 1
 
-          sed -Ei "s|(public const string PluginVersion = \")[^\"]+(\";)|\1$VERSION\2|" src/EclipseRandomizer/Plugin.cs
+          sed -Ei "s|(public const string PluginVersion = \")[^\"]+(\";)|\1$VERSION\2|" src/SurvivorRandomizer/Plugin.cs
           sed -Ei "s|<Version>[^<]+</Version>|<Version>$VERSION</Version>|" "$PROJECT"
           jq --arg version "$VERSION" '.version_number = $version' manifest.json > manifest.json.tmp
           mv manifest.json.tmp manifest.json
 
-          grep -Fq "public const string PluginVersion = \"$VERSION\";" src/EclipseRandomizer/Plugin.cs
+          grep -Fq "public const string PluginVersion = \"$VERSION\";" src/SurvivorRandomizer/Plugin.cs
           grep -Fq "<Version>$VERSION</Version>" "$PROJECT"
           jq -e --arg version "$VERSION" '.version_number == $version' manifest.json >/dev/null
           git diff --check
@@ -110,14 +110,14 @@ jobs:
         shell: bash
         run: |
           cd dist
-          zip -r "../$AUTHOR-EclipseRandomizer-$VERSION.zip" BepInEx icon.png manifest.json README.md
+          zip -r "../$AUTHOR-SurvivorRandomizer-$VERSION.zip" BepInEx icon.png manifest.json README.md
 
       - name: Commit version and tag
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/EclipseRandomizer/Plugin.cs "$PROJECT" manifest.json
+          git add src/SurvivorRandomizer/Plugin.cs "$PROJECT" manifest.json
 
           if ! git diff --cached --quiet; then
             git commit -m "chore(release): $TAG"
@@ -131,7 +131,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           gh release create "$TAG"
-          "$AUTHOR-EclipseRandomizer-$VERSION.zip"
+          "$AUTHOR-SurvivorRandomizer-$VERSION.zip"
           --verify-tag
           --title "Eclipse Randomizer $TAG"
           --generate-notes

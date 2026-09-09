@@ -13,14 +13,14 @@ using UnityEngine.UI;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 #pragma warning restore CS0618
 
-namespace EclipseRandomizer;
+namespace SurvivorRandomizer;
 
 [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
 public sealed class Plugin : BaseUnityPlugin
 {
-    public const string PluginGuid = "com.cirillom.eclipserandomizer";
+    public const string PluginGuid = "com.cirillom.SurvivorRandomizer";
     public const string PluginName = "Eclipse Randomizer";
-    public const string PluginVersion = "1.0.1";
+    public const string PluginVersion = "1.0.0";
 
     private CharacterSelectController? _characterSelectController;
 
@@ -60,7 +60,7 @@ public sealed class Plugin : BaseUnityPlugin
 
         // IMPORTANT: sibling of ReadyPanel, not child of it.
         // This keeps us completely outside ReadyPanel's layout system.
-        var rootObject = new GameObject("EclipseRandomizerPanel", typeof(RectTransform));
+        var rootObject = new GameObject("SurvivorRandomizerPanel", typeof(RectTransform));
         rootObject.layer = readyPanel.gameObject.layer;
         rootObject.transform.SetParent(readyPanel.parent, false);
 
@@ -78,13 +78,13 @@ public sealed class Plugin : BaseUnityPlugin
 
         if (IsEclipseRun())
         {
-            CreateLobbyButton(controller, root, "EclipseRandomizerRandom", "RANDOM SURVIVOR", new Vector2(-120f, 0f), new Color(0.10f, 0.30f, 0.48f, 1f), RandomizeSurvivor);
+            CreateLobbyButton(controller, root, "SurvivorRandomizerRandom", "RANDOM SURVIVOR", new Vector2(-120f, 0f), new Color(0.10f, 0.30f, 0.48f, 1f), RandomizeSurvivor);
 
-            CreateLobbyButton(controller, root, "EclipseRandomizerLowest", "LOWEST ECLIPSE", new Vector2(120f, 0f), new Color(0.48f, 0.30f, 0.08f, 1f), RandomizeLowestEclipse);
+            CreateLobbyButton(controller, root, "SurvivorRandomizerLowest", "LOWEST ECLIPSE", new Vector2(120f, 0f), new Color(0.48f, 0.30f, 0.08f, 1f), RandomizeLowestEclipse);
         }
         else
         {
-            CreateLobbyButton(controller, root, "EclipseRandomizerRandom", "RANDOM SURVIVOR", Vector2.zero, new Color(0.10f, 0.30f, 0.48f, 1f), RandomizeSurvivor);
+            CreateLobbyButton(controller, root, "SurvivorRandomizerRandom", "RANDOM SURVIVOR", Vector2.zero, new Color(0.10f, 0.30f, 0.48f, 1f), RandomizeSurvivor);
         }
 
         Logger.LogInfo(IsEclipseRun() ? "Created Eclipse randomizer panel." : "Created randomizer panel.");
