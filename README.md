@@ -1,4 +1,4 @@
-# Eclipse Randomizer
+# Survivor Randomizer
 
 Client-side Risk of Rain 2 survivor randomizer.
 

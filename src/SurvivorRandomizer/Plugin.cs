@@ -18,15 +18,15 @@ namespace SurvivorRandomizer;
 [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
 public sealed class Plugin : BaseUnityPlugin
 {
-    public const string PluginGuid = "com.cirillom.SurvivorRandomizer";
-    public const string PluginName = "Eclipse Randomizer";
-    public const string PluginVersion = "1.0.0";
+    public const string PluginGuid = "com.cirillom.survivorrandomizer";
+    public const string PluginName = "Survivor Randomizer";
+    public const string PluginVersion = "1.0.1";
 
     private CharacterSelectController? _characterSelectController;
 
     private void Awake()
     {
-        Logger.LogInfo("Eclipse Randomizer loaded!");
+        Logger.LogInfo("Survivor Randomizer loaded!");
 
         On.RoR2.UI.CharacterSelectController.Awake += CharacterSelectControllerAwake;
     }
@@ -87,7 +87,7 @@ public sealed class Plugin : BaseUnityPlugin
             CreateLobbyButton(controller, root, "SurvivorRandomizerRandom", "RANDOM SURVIVOR", Vector2.zero, new Color(0.10f, 0.30f, 0.48f, 1f), RandomizeSurvivor);
         }
 
-        Logger.LogInfo(IsEclipseRun() ? "Created Eclipse randomizer panel." : "Created randomizer panel.");
+        Logger.LogInfo("Created survivor randomizer panel.");
     }
 
     private void CreateLobbyButton(CharacterSelectController controller, RectTransform parent, string objectName, string text, Vector2 position, Color normalColor, UnityEngine.Events.UnityAction action)
