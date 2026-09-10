@@ -52,7 +52,7 @@
     />
 
     <Copy
-      SourceFiles="$(MSBuildProjectDirectory)/../../manifest.json;$(MSBuildProjectDirectory)/../../README.md;$(MSBuildProjectDirectory)/../../icon.png"
+      SourceFiles="$(MSBuildProjectDirectory)/../../manifest.json;$(MSBuildProjectDirectory)/../../README.md;$(MSBuildProjectDirectory)/../../icon.png;$(MSBuildProjectDirectory)/../../normal.png"
       DestinationFolder="$(ReleaseRoot)"
     />
   </Target>

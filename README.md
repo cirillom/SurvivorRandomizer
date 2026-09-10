@@ -2,6 +2,8 @@
 
 Client-side Risk of Rain 2 survivor randomizer.
 
+![Random Survivor button in the character select lobby](https://raw.githubusercontent.com/cirillom/SurvivorRandomizer/refs/heads/main/normal.png)
+
 ## Features
 
 - Random survivor selection

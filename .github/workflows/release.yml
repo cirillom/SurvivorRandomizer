@@ -116,7 +116,7 @@ jobs:
         shell: bash
         run: |
           cd dist
-          zip -r "../$AUTHOR-SurvivorRandomizer-$VERSION.zip" BepInEx icon.png manifest.json README.md
+          zip -r "../$AUTHOR-SurvivorRandomizer-$VERSION.zip" BepInEx icon.png manifest.json README.md normal.png
 
       - name: Commit version and tag
         shell: bash
